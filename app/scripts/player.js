@@ -13,6 +13,9 @@ class Player {
         this.footRRotation = 0.01;
         this.meshFaceRotation = 0.005;
         this.bodyFaceRotation = 0.01;
+        this.meshes = [];
+        this.groups = [];
+        this.count = 0;
 
 
         let MATERIALS = {
@@ -44,6 +47,7 @@ class Player {
         //顔用グループ
         this.playerFace = new THREE.Group();
         this.player.add(this.playerFace);
+        this.groups.push(this.playerFace);
 
         this.playerFace.rotation.x = Math.PI / 180 * 5;
 
@@ -73,6 +77,7 @@ class Player {
         let meshFace = new THREE.Mesh(geometryFace, materialFace);
         meshFace.castShadow = true;
         this.playerFace.add(meshFace);
+        this.meshes.push(meshFace);
 
         //口
         let geometryMouth = new THREE.BoxGeometry(0.8, 0.1, 0.01);
@@ -83,6 +88,8 @@ class Player {
         meshMouth.position.y = meshFace.position.y - 0.35;
 
         this.playerFace.add(meshMouth);
+        this.meshes.push(meshMouth);
+
 
         //鼻
         let geometryNose = new THREE.BoxGeometry(0.2, 0.2, 0.2);
@@ -93,6 +100,8 @@ class Player {
         meshNose.position.y = meshFace.position.y - 0.15;
 
         this.playerFace.add(meshNose);
+        this.meshes.push(meshNose);
+
 
         //耳
         let geometryEar = new THREE.BoxGeometry(1.2, 0.3, 0.1);
@@ -102,6 +111,7 @@ class Player {
         meshEar.position.y = -0.1;
         meshEar.position.z = 0.1;
         this.playerFace.add(meshEar);
+        this.meshes.push(meshEar);
 
         //目
         let lEyeGroup = new THREE.Group();
@@ -154,7 +164,6 @@ class Player {
         lEyeGroup.rotation.z = Math.PI / 180 * -15;
         rEyeGroup.position.x = -0.25;
         rEyeGroup.rotation.z = Math.PI / 180 * 15;
-
         this.playerFace.add(lEyeGroup);
         this.playerFace.add(rEyeGroup);
 
@@ -164,6 +173,7 @@ class Player {
         let meshNeck = new THREE.Mesh(this.geometryNeck, materialNeck);
         meshNeck.castShadow = true;
         meshNeck.position.y = meshFace.position.y - meshFace.scale.y / 2 - 0.05;
+        this.meshes.push(meshNeck);
         this.playerFace.add(meshNeck);
 
         //体
@@ -173,6 +183,8 @@ class Player {
         let meshBody = new THREE.Mesh(geometryBody, materialBody);
         meshBody.castShadow = true;
         meshBody.position.y = meshNeck.position.y - 0.4;
+        this.meshes.push(meshBody);
+        this.groups.push(this.bodyGroup);
         this.bodyGroup.add(meshBody);
 
         //左手
@@ -186,6 +198,8 @@ class Player {
         meshLhand.rotation.z = -90 * Math.PI / 180;
 
         this.handLGroup.add(meshLhand);
+        this.meshes.push(meshLhand);
+        this.groups.push(this.handLGroup);
         this.player.add(this.handLGroup);
 
         //右手
@@ -199,6 +213,8 @@ class Player {
         meshRhand.rotation.z = 90 * Math.PI / 180;
 
         this.handRGroup.add(meshRhand);
+        this.meshes.push(meshRhand);
+        this.groups.push(this.handRGroup);
         this.player.add(this.handRGroup);
 
         //左足
@@ -211,6 +227,7 @@ class Player {
         meshLleg.rotation.z = -90 * Math.PI / 180;
         meshLleg.castShadow = true;
         this.footLGroup.add(meshLleg);
+        this.groups.push(meshLleg);
         this.player.add(this.footLGroup);
 
         //右足
@@ -223,6 +240,7 @@ class Player {
         meshRleg.position.x = meshBody.position.x - 0.2;
         meshRleg.rotation.z = 90 * Math.PI / 180;
         this.footRGroup.add(meshRleg);
+        this.groups.push(meshRleg);
         this.player.add(this.footRGroup);
 
 
@@ -261,10 +279,10 @@ class Player {
 
 
         this.geometryPants.computeFaceNormals();
-
+        this.meshes.push(meshPants);
+        this.groups.push(meshPants);
         this.bodyGroup.add(meshPants);
         this.player.add(this.bodyGroup);
-
 
     }
 
@@ -291,8 +309,6 @@ class Player {
             this.bodyMove();
             this.walk();
         }
-
-
         // animation
         requestAnimationFrame(this.render.bind(this));
     }
@@ -362,6 +378,17 @@ class Player {
             this.footRRotation = 0.01;
         }
         this.footRGroup.rotation.x += this.footRRotation;
+    }
+
+    break () {
+        this.count += 10;
+        if (this.count < 90) {
+            this.player.rotation.x = Math.PI / 180 * this.count;
+        }
+
+
+        this.player.position.y += (0.5 - this.player.position.y) / 3;
+
     }
 
 }
